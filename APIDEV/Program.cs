@@ -1,5 +1,7 @@
 using APIDEV.Container;
+using APIDEV.Repos;
 using APIDEV.Service;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
+builder.Services.AddDbContext<LearndataContext>(o =>
+o.UseSqlServer(builder.Configuration.GetConnectionString("apicon")));
 
 var app = builder.Build();
 
