@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using APIDEV.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIDEV.Controllers
@@ -7,5 +8,11 @@ namespace APIDEV.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
+        private readonly ICustomerService service;
+
+        public CustomerController(ICustomerService service)
+        {
+            this.service = service;
+        }
     }
 }
