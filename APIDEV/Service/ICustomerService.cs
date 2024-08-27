@@ -5,6 +5,6 @@ namespace APIDEV.Service
 {
     public interface ICustomerService
     {
-        Tast<List<Customermodal>> GetAll();
+        Task<List<Customermodal>> Getall();
     }
 }

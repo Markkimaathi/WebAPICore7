@@ -18,4 +18,3 @@ namespace APIDEV.Modal
         public string? Statusname { get; set; }
     }
 }
-

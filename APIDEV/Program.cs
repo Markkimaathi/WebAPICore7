@@ -18,7 +18,7 @@ builder.Services.AddDbContext<LearndataContext>(o =>
 o.UseSqlServer(builder.Configuration.GetConnectionString("apicon")));
 
 var automapper = new MapperConfiguration(item => item.AddProfile(new AutoMapperHandler()));
-IMapper mapper=automapper.CreateMapper();
+IMapper mapper = automapper.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();

@@ -19,14 +19,12 @@ namespace APIDEV.Controllers
 
         public async Task<IActionResult> GetAll()
         {
-            {
-                var data =await this.service.GetAll();
+                var data =await this.service.Getall();
                 if (data == null)
                 {
                     return NotFound();
                 }
                 return Ok(data);
-            }
         }
     }
 }
