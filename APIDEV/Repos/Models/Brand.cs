@@ -16,5 +16,5 @@ public partial class Brand
 
     public string? Category { get; set; }
 
-    public bool? IsActive { get; set; }
+    public int IsActive { get; set; }
 }

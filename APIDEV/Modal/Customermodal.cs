@@ -15,7 +15,7 @@ namespace APIDEV.Modal
 
         public string? Category { get; set; }
 
-        public bool? IsActive { get; set; }
+        public int IsActive { get; set; }
 
         public string? Statusname { get; set; }
     }

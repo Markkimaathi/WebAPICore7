@@ -3,6 +3,7 @@ using APIDEV.Helper;
 using APIDEV.Repos;
 using APIDEV.Service;
 using AutoMapper;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -36,6 +37,14 @@ builder.Services.AddCors(p => p.AddDefaultPolicy(build =>
     build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
+{
+    options.Window = TimeSpan.FromSeconds(5);
+    options.PermitLimit = 1;
+    options.QueueLimit = 0;
+    options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+}));
+
 string logpath=builder.Configuration.GetSection("Logging:Logpath").Value;
 var _logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -46,6 +55,8 @@ var _logger = new LoggerConfiguration()
 builder.Logging.AddSerilog(_logger);
 
 var app = builder.Build();
+
+app.UseRateLimiter();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
