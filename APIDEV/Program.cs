@@ -1,6 +1,8 @@
 using APIDEV.Container;
+using APIDEV.Helper;
 using APIDEV.Repos;
 using APIDEV.Service;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
 builder.Services.AddDbContext<LearndataContext>(o =>
 o.UseSqlServer(builder.Configuration.GetConnectionString("apicon")));
+
+var automapper = new MapperConfiguration(item => item.AddProfile(new AutoMapperHandler()));
+IMapper mapper=automapper.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 
