@@ -39,9 +39,9 @@ namespace APIDEV.Helper
                 string name = array[0];
                 string description = array[1];
 
-                var user = await context.Events.FirstOrDefaultAsync(item => item.Name == name && item.Description == description);
+                var user = await this.context.Events.FirstOrDefaultAsync(item => item.Name == name && item.Description == description);
 
-                if (user != null)
+                if (user != null)   
                 {
                     var claims = new[] { new Claim(ClaimTypes.Name, user.Name) };
                     var identity = new ClaimsIdentity(claims, Scheme.Name);
