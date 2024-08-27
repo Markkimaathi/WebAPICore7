@@ -20,6 +20,8 @@ public partial class LearndataContext : DbContext
 
     public virtual DbSet<Event> Events { get; set; }
 
+    public virtual DbSet<TblRefreshtoken> TblRefreshtokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         OnModelCreatingPartial(modelBuilder);

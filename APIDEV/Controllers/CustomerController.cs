@@ -1,5 +1,6 @@
 ﻿using APIDEV.Modal;
 using APIDEV.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.Identity.Client;
 
 namespace APIDEV.Controllers
 {
+    //[Authorize]
     //[DisableCors]
     [EnableRateLimiting("fixedwindow")]
     [Route("api/[controller]")]
@@ -32,7 +34,7 @@ namespace APIDEV.Controllers
             }
             return Ok(data);
         }
-
+        [DisableRateLimiting]
         [HttpGet("Getbycode")]
         public async Task<IActionResult> Getbycode(string code)
         {

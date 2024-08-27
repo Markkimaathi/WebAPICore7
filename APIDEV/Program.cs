@@ -3,6 +3,7 @@ using APIDEV.Helper;
 using APIDEV.Repos;
 using APIDEV.Service;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -18,6 +19,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
 builder.Services.AddDbContext<LearndataContext>(o =>
 o.UseSqlServer(builder.Configuration.GetConnectionString("apicon")));
+
+builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication",null);
 
 var automapper = new MapperConfiguration(item => item.AddProfile(new AutoMapperHandler()));
 IMapper mapper = automapper.CreateMapper();
@@ -43,7 +46,7 @@ builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixedw
     options.PermitLimit = 1;
     options.QueueLimit = 0;
     options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-}));
+}).RejectionStatusCode=401);
 
 string logpath=builder.Configuration.GetSection("Logging:Logpath").Value;
 var _logger = new LoggerConfiguration()
@@ -68,6 +71,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();    
 
 app.UseAuthorization();
 
