@@ -21,10 +21,24 @@ o.UseSqlServer(builder.Configuration.GetConnectionString("apicon")));
 var automapper = new MapperConfiguration(item => item.AddProfile(new AutoMapperHandler()));
 IMapper mapper = automapper.CreateMapper();
 builder.Services.AddSingleton(mapper);
+builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
+{
+    build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
+builder.Services.AddCors(p => p.AddPolicy("corspolicy1", build =>
+{
+    build.WithOrigins("https://domain3.com").AllowAnyMethod().AllowAnyHeader();
+}));
+
+builder.Services.AddCors(p => p.AddDefaultPolicy(build =>
+{
+    build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 
 string logpath=builder.Configuration.GetSection("Logging:Logpath").Value;
 var _logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
+    .MinimumLevel.Information()
     .MinimumLevel.Override("microsoft", Serilog.Events.LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .WriteTo.File(logpath)
@@ -39,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 

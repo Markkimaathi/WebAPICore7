@@ -1,11 +1,13 @@
 ﻿using APIDEV.Modal;
 using APIDEV.Service;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 
 namespace APIDEV.Controllers
 {
+    //[DisableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
@@ -17,6 +19,7 @@ namespace APIDEV.Controllers
             this.service = service;
         }
 
+        //[EnableCors("corspolicy1")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
