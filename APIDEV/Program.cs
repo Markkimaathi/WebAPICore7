@@ -4,6 +4,7 @@ using APIDEV.Repos;
 using APIDEV.Service;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,15 @@ o.UseSqlServer(builder.Configuration.GetConnectionString("apicon")));
 var automapper = new MapperConfiguration(item => item.AddProfile(new AutoMapperHandler()));
 IMapper mapper = automapper.CreateMapper();
 builder.Services.AddSingleton(mapper);
+
+string logpath=builder.Configuration.GetSection("Logging:Logpath").Value;
+var _logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("microsoft", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.File(logpath)
+    .CreateLogger();
+builder.Logging.AddSerilog(_logger);
 
 var app = builder.Build();
 

@@ -13,11 +13,13 @@ namespace APIDEV.Container
     {
         private readonly LearndataContext context;  
         private readonly IMapper  mapper;
+        private readonly ILogger<CustomerService> logger;
 
-        public CustomerService(LearndataContext context,IMapper mapper)
+        public CustomerService(LearndataContext context,IMapper mapper, ILogger<CustomerService> logger)
         {
             this.context = context;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task<APIResponse> Create(Customermodal data)
@@ -25,6 +27,7 @@ namespace APIDEV.Container
             APIResponse response = new APIResponse();
             try
             {
+                this.logger.LogInformation("Create Begins");
                 Brand _customer = this.mapper.Map<Customermodal, Brand>(data);
                 await this.context.Brands.AddAsync(_customer);
                 await this.context.SaveChangesAsync();
@@ -35,6 +38,7 @@ namespace APIDEV.Container
             {
                 response.ResponseCode = 400;
                 response.Errormessage = ex.Message;
+                this.logger.LogError(ex.Message,ex);
             }
             return response;
         }
