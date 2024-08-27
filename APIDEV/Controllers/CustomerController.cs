@@ -15,12 +15,12 @@ namespace APIDEV.Controllers
         {
             this.service = service;
         }
-        [HttpGet]
+        [HttpGet("GetAll")]
 
-        public ActionResult Get()
+        public async Task<IActionResult> GetAll()
         {
             {
-                var data = this.service.GetAll();
+                var data =await this.service.GetAll();
                 if (data == null)
                 {
                     return NotFound();

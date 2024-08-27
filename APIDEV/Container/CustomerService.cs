@@ -16,10 +16,10 @@ namespace APIDEV.Container
             this.context = context;
             this.mapper = mapper;
         }
-        public List<Customermodal> GetAll()
+        public async Task<List<Customermodal>> GetAll()
         { 
             List<Customermodal> _response = new List<Customermodal>();
-            var _data= this.context.Brands.ToList();
+            var _data= await this.context.Brands.ToListAync();
             if(_data != null )
             {
                 _response=this.mapper.Map<List<Brand>,List<Customermodal>>(_data);
