@@ -46,6 +46,42 @@ namespace APIDEV.Controllers
             return Ok(response);
         }
 
+        [HttpPut("MultiUploadImage")]
+        public async Task<IActionResult> MultiUploadImage(IFormFileCollection filecollection, string productcode)
+        {
+            APIResponse response = new APIResponse();
+            int passcount = 0; int errorcount =0;
+            try
+            {
+                string Filepath = GetFilepath(productcode);
+                if (!System.IO.Directory.Exists(Filepath))
+                {
+                    System.IO.Directory.CreateDirectory(Filepath);
+                }
+                foreach (var file in filecollection)
+                {
+                    string imagepath = Filepath + "\\" + file.FileName;
+                    if (System.IO.File.Exists(imagepath))
+                    {
+                        System.IO.File.Delete(imagepath);
+                    }
+                    using (FileStream stream = System.IO.File.Create(imagepath))
+                    {
+                        await file.CopyToAsync(stream);
+                        passcount++;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                errorcount++;
+                response.Errormessage = ex.Message;
+            }
+            response.ResponseCode = 200;
+            response.Result = passcount + " Files uploaded &" + errorcount + "files failed";
+            return Ok(response);
+        }
+
         [NonAction]
 
         private string GetFilepath(string productcode)
