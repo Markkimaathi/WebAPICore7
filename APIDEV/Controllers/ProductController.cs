@@ -82,6 +82,32 @@ namespace APIDEV.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetImage")]
+
+        public async Task<IActionResult> GetImage(string productcode)
+        {
+            string imageurl = string.Empty;
+            string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            try
+            {
+                string Filepath = GetFilepath(productcode);
+                string imagepath = Filepath + "\\" + productcode + ".png";
+                if(System.IO.File.Exists(imagepath))
+                {
+                    imageurl = hosturl + "Upload/product/" + productcode + "/" + productcode + ".png";
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Ok(imageurl);
+        }
+
         [NonAction]
 
         private string GetFilepath(string productcode)
