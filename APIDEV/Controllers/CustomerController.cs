@@ -9,7 +9,7 @@ using Microsoft.Identity.Client;
 
 namespace APIDEV.Controllers
 {
-    //[Authorize]
+    [Authorize]
     //[DisableCors]
     [EnableRateLimiting("fixedwindow")]
     [Route("api/[controller]")]
