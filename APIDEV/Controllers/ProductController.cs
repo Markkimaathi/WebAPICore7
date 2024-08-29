@@ -108,6 +108,39 @@ namespace APIDEV.Controllers
             return Ok(imageurl);
         }
 
+
+        [HttpGet("GetMultiImage")]
+        public async Task<IActionResult> GetMultiImage(string productcode)
+        {
+            List<string> Imageurl = new List<string>();
+            string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            try
+            {
+                string Filepath = GetFilepath(productcode);
+
+                if (System.IO.Directory.Exists(Filepath))
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(Filepath);
+                    FileInfo[] fileInfos = directoryInfo.GetFiles();
+                    foreach (FileInfo fileInfo in fileInfos)
+                    {
+                        string filename = fileInfo.Name;
+                        string imagepath = Filepath + "\\" + filename;
+                        if (System.IO.File.Exists(imagepath))
+                        {
+                            string _Imageurl = hosturl + "/Upload/product/" + productcode + "/" + filename;
+                            Imageurl.Add(_Imageurl);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return Ok(Imageurl);
+        }
+
         [NonAction]
 
         private string GetFilepath(string productcode)
