@@ -192,6 +192,35 @@ namespace APIDEV.Controllers
             }
         }
 
+        [HttpGet("multiremove")]
+        public async Task<IActionResult> multiremove(string productcode)
+        {
+            // string Imageurl = string.Empty;
+            //string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            try
+            {
+                string Filepath = GetFilepath(productcode);
+                if (System.IO.Directory.Exists(Filepath))
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(Filepath);
+                    FileInfo[] fileInfos = directoryInfo.GetFiles();
+                    foreach (FileInfo fileInfo in fileInfos)
+                    {
+                        fileInfo.Delete();
+                    }
+                    return Ok("pass");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
+
         [NonAction]
         private string GetFilepath(string productcode)
         {
