@@ -20,10 +20,19 @@ public partial class LearndataContext : DbContext
 
     public virtual DbSet<Event> Events { get; set; }
 
+    public virtual DbSet<TblProduct> TblProducts { get; set; }
+
+    public virtual DbSet<TblProductimage> TblProductimages { get; set; }
+
     public virtual DbSet<TblRefreshtoken> TblRefreshtokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TblProductimage>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

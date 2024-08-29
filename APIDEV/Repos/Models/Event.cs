@@ -17,5 +17,4 @@ public partial class Event
     public string Description { get; set; } = null!;
 
     public DateTime EventDate { get; set; }
-
 }
