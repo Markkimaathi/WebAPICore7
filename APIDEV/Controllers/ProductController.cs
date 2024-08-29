@@ -50,7 +50,8 @@ namespace APIDEV.Controllers
         public async Task<IActionResult> MultiUploadImage(IFormFileCollection filecollection, string productcode)
         {
             APIResponse response = new APIResponse();
-            int passcount = 0; int errorcount = 0;
+            int passcount = 0;
+            int errorcount = 0;
             try
             {
                 string Filepath = GetFilepath(productcode);
@@ -102,7 +103,7 @@ namespace APIDEV.Controllers
             }
             catch (Exception ex)
             {
-
+                // Handle exception if necessary
             }
             return Ok(imageurl);
         }
@@ -135,6 +136,7 @@ namespace APIDEV.Controllers
             }
             catch (Exception ex)
             {
+                // Handle exception if necessary
             }
             return Ok(Imageurl);
         }
@@ -155,6 +157,29 @@ namespace APIDEV.Controllers
                     }
                     stream.Position = 0;
                     return File(stream, "image/png", productcode + ".png");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("remove")]
+        public async Task<IActionResult> remove(string productcode)
+        {
+            try
+            {
+                string Filepath = GetFilepath(productcode);
+                string imagepath = Filepath + "\\" + productcode + ".png";
+                if (System.IO.File.Exists(imagepath))
+                {
+                    System.IO.File.Delete(imagepath);
+                    return Ok("pass");
                 }
                 else
                 {
