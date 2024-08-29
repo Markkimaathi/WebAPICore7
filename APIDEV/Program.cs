@@ -2,6 +2,7 @@ using APIDEV.Container;
 using APIDEV.Helper;
 using APIDEV.Modal;
 using APIDEV.Repos;
+using APIDEV.Repos.Models;
 using APIDEV.Service;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
@@ -85,6 +86,47 @@ var _jwtsetting = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(_jwtsetting);
 
 var app = builder.Build();
+
+app.MapGet("/minimalapi", () => "Mark");
+
+app.MapGet("/getchannel", (string channelname) => "Welcome to " + channelname).WithOpenApi(opt =>
+{
+    var parameter = opt.Parameters[0];
+    parameter.Description = "Enter Channel Name";
+    return opt;
+});
+
+app.MapGet("/getcustomer", async (LearndataContext db) => {
+    return await db.Brands.ToListAsync();
+});
+
+app.MapGet("/getcustomerbycode/{code}", async (LearndataContext db, string code) => {
+    return await db.Brands.FindAsync(code);
+});
+
+app.MapPost("/createcustomer", async (LearndataContext db, Brand customer) => {
+    await db.Brands.AddAsync(customer);
+    await db.SaveChangesAsync();
+});
+
+app.MapPut("/updatecustomer/{code}", async (LearndataContext db, Brand customer, string code) => {
+    var existdata = await db.Brands.FindAsync(code);
+    if (existdata != null)
+    {
+        existdata.Name = customer.Name;
+        existdata.Category = customer.Category;
+    }
+    await db.SaveChangesAsync();
+});
+
+app.MapDelete("/removecustomer/{code}", async (LearndataContext db, string code) => {
+    var existdata = await db.Brands.FindAsync(code);
+    if (existdata != null)
+    {
+        db.Brands.Remove(existdata);
+    }
+    await db.SaveChangesAsync();
+});
 
 app.UseRateLimiter();
 
