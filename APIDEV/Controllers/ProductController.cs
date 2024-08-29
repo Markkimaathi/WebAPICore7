@@ -50,7 +50,7 @@ namespace APIDEV.Controllers
         public async Task<IActionResult> MultiUploadImage(IFormFileCollection filecollection, string productcode)
         {
             APIResponse response = new APIResponse();
-            int passcount = 0; int errorcount =0;
+            int passcount = 0; int errorcount = 0;
             try
             {
                 string Filepath = GetFilepath(productcode);
@@ -78,12 +78,11 @@ namespace APIDEV.Controllers
                 response.Errormessage = ex.Message;
             }
             response.ResponseCode = 200;
-            response.Result = passcount + " Files uploaded &" + errorcount + "files failed";
+            response.Result = passcount + " Files uploaded & " + errorcount + " files failed";
             return Ok(response);
         }
 
         [HttpGet("GetImage")]
-
         public async Task<IActionResult> GetImage(string productcode)
         {
             string imageurl = string.Empty;
@@ -92,7 +91,7 @@ namespace APIDEV.Controllers
             {
                 string Filepath = GetFilepath(productcode);
                 string imagepath = Filepath + "\\" + productcode + ".png";
-                if(System.IO.File.Exists(imagepath))
+                if (System.IO.File.Exists(imagepath))
                 {
                     imageurl = hosturl + "Upload/product/" + productcode + "/" + productcode + ".png";
                 }
@@ -107,7 +106,6 @@ namespace APIDEV.Controllers
             }
             return Ok(imageurl);
         }
-
 
         [HttpGet("GetMultiImage")]
         public async Task<IActionResult> GetMultiImage(string productcode)
@@ -141,8 +139,35 @@ namespace APIDEV.Controllers
             return Ok(Imageurl);
         }
 
-        [NonAction]
+        [HttpGet("download")]
+        public async Task<IActionResult> download(string productcode)
+        {
+            try
+            {
+                string Filepath = GetFilepath(productcode);
+                string imagepath = Filepath + "\\" + productcode + ".png";
+                if (System.IO.File.Exists(imagepath))
+                {
+                    MemoryStream stream = new MemoryStream();
+                    using (FileStream fileStream = new FileStream(imagepath, FileMode.Open))
+                    {
+                        await fileStream.CopyToAsync(stream);
+                    }
+                    stream.Position = 0;
+                    return File(stream, "image/png", productcode + ".png");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
 
+        [NonAction]
         private string GetFilepath(string productcode)
         {
             return this.environment.WebRootPath + "\\Upload\\product\\" + productcode;
