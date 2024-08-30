@@ -1,7 +1,9 @@
 ﻿# Required packages
 
-![Screenshot (59)](https://github.com/user-attachments/assets/79ebee46-9fe5-465e-be3e-792556ccb155)
+![Screenshot (59)](https://github.com/user-attachments/assets/3bd1918b-7abf-4d79-ad06-4655fcc272ed)
 
-![Screenshot (60)](https://github.com/user-attachments/assets/613a41e0-9320-4a62-87b3-e1b9ac2364b6)
+![Screenshot (60)](https://github.com/user-attachments/assets/20c65a31-0453-44c7-9a67-41583d228509)
 
 .NET 7 development with various features such as Authorization, exporting of excel, Sending OTP to mail, CORS enabling, RateLimitn, among others.
+Clone the project using: gitclone https://github.com/Markkimaathi/WebAPICore7.git
+Afterwards, install the packages in the screenshot and run the project locally from Visual Studio
