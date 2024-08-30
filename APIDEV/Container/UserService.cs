@@ -1,18 +1,24 @@
 ﻿using APIDEV.Helper;
 using APIDEV.Modal;
+using APIDEV.Repos.Models;
 using APIDEV.Repos;
 using APIDEV.Service;
-using APIDEV.Repos.Models;
+using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIDEV.Container
+namespace LearnAPI.Container
 {
     public class UserService : IUserService
     {
         private readonly LearndataContext context;
-        public UserService(LearndataContext learndata)
+        private readonly IMapper mapper;
+        private readonly IEmailService emailService;
+        public UserService(LearndataContext learndata, IMapper mapper, IEmailService emailService)
         {
             this.context = learndata;
+            this.mapper = mapper;
+            this.emailService = emailService;
         }
         public async Task<APIResponse> ConfirmRegister(int userid, string username, string otptext)
         {
@@ -21,7 +27,7 @@ namespace APIDEV.Container
             if (!otpresponse)
             {
                 response.Result = "fail";
-                response.Message = "Invalid OTP or Expired";
+                response.Errormessage = "Invalid OTP or Expired";
             }
             else
             {
@@ -42,7 +48,7 @@ namespace APIDEV.Container
                 await this.context.SaveChangesAsync();
                 await UpdatePWDManager(username, _tempdata.Password);
                 response.Result = "pass";
-                response.Message = "Registered successfully.";
+                response.Errormessage = "Registered successfully.";
             }
 
             return response;
@@ -62,7 +68,7 @@ namespace APIDEV.Container
                 {
                     isvalid = false;
                     response.Result = "fail";
-                    response.Message = "Duplicate username";
+                    response.Errormessage = "Duplicate username";
                 }
 
                 // duplicate Email
@@ -71,7 +77,7 @@ namespace APIDEV.Container
                 {
                     isvalid = false;
                     response.Result = "fail";
-                    response.Message = "Duplicate Email";
+                    response.Errormessage = "Duplicate Email";
                 }
 
 
@@ -92,7 +98,7 @@ namespace APIDEV.Container
                     await UpdateOtp(userRegister.UserName, OTPText, "register");
                     await SendOtpMail(userRegister.Email, OTPText, userRegister.Name);
                     response.Result = "pass";
-                    response.Message = userid.ToString();
+                    response.Errormessage = userid.ToString();
                 }
 
             }
@@ -116,7 +122,7 @@ namespace APIDEV.Container
                 if (_pwdhistory)
                 {
                     response.Result = "fail";
-                    response.Message = "Don't use the same password that used in last 3 transaction";
+                    response.Errormessage = "Don't use the same password that used in last 3 transaction";
                 }
                 else
                 {
@@ -124,13 +130,13 @@ namespace APIDEV.Container
                     await this.context.SaveChangesAsync();
                     await UpdatePWDManager(username, newpassword);
                     response.Result = "pass";
-                    response.Message = "Password changed.";
+                    response.Errormessage = "Password changed.";
                 }
             }
             else
             {
                 response.Result = "fail";
-                response.Message = "Failed to validate old password.";
+                response.Errormessage = "Failed to validate old password.";
             }
             return response;
         }
@@ -145,13 +151,13 @@ namespace APIDEV.Container
                 await UpdateOtp(username, otptext, "forgetpassword");
                 await SendOtpMail(_user.Email, otptext, _user.Name);
                 response.Result = "pass";
-                response.Message = "OTP sent";
+                response.Errormessage = "OTP sent";
 
             }
             else
             {
                 response.Result = "fail";
-                response.Message = "Invalid User";
+                response.Errormessage = "Invalid User";
             }
             return response;
         }
@@ -167,7 +173,7 @@ namespace APIDEV.Container
                 if (pwdhistory)
                 {
                     response.Result = "fail";
-                    response.Message = "Don't use the same password that used in last 3 transaction";
+                    response.Errormessage = "Don't use the same password that used in last 3 transaction";
                 }
                 else
                 {
@@ -178,14 +184,14 @@ namespace APIDEV.Container
                         await this.context.SaveChangesAsync();
                         await UpdatePWDManager(username, Password);
                         response.Result = "pass";
-                        response.Message = "Password changed";
+                        response.Errormessage = "Password changed";
                     }
                 }
             }
             else
             {
                 response.Result = "fail";
-                response.Message = "Invalid OTP";
+                response.Errormessage = "Invalid OTP";
             }
             return response;
         }
@@ -236,7 +242,23 @@ namespace APIDEV.Container
 
         private async Task SendOtpMail(string useremail, string OtpText, string Name)
         {
+            var mailrequest = new Mailrequest();
+            mailrequest.Email = useremail;
+            mailrequest.Subject = "Thanks for registering : OTP";
+            mailrequest.Emailbody = GenerateEmailBody(Name, OtpText);
+            await this.emailService.SendEmail(mailrequest);
 
+        }
+
+        private string GenerateEmailBody(string name, string otptext)
+        {
+            string emailbody = "<div style='width:100%;background-color:grey'>";
+            emailbody += "<h1>Hi " + name + ", Thanks for registering</h1>";
+            emailbody += "<h2>Please enter OTP text and complete the registeration</h2>";
+            emailbody += "<h2>OTP Text is :" + otptext + "</h2>";
+            emailbody += "</div>";
+
+            return emailbody;
         }
 
         private async Task<bool> Validatepwdhistory(string Username, string password)
@@ -266,12 +288,12 @@ namespace APIDEV.Container
                 _user.Isactive = userstatus;
                 await this.context.SaveChangesAsync();
                 response.Result = "pass";
-                response.Message = "User Status changed";
+                response.Errormessage = "User Status changed";
             }
             else
             {
                 response.Result = "fail";
-                response.Message = "Invalid User";
+                response.Errormessage = "Invalid User";
             }
             return response;
         }
@@ -285,14 +307,35 @@ namespace APIDEV.Container
                 _user.Role = userrole;
                 await this.context.SaveChangesAsync();
                 response.Result = "pass";
-                response.Message = "User Role changed";
+                response.Errormessage = "User Role changed";
             }
             else
             {
                 response.Result = "fail";
-                response.Message = "Invalid User";
+                response.Errormessage = "Invalid User";
             }
             return response;
+        }
+
+        public async Task<List<UserModel>> Getall()
+        {
+            List<UserModel> _response = new List<UserModel>();
+            var _data = await this.context.TblUsers.ToListAsync();
+            if (_data != null)
+            {
+                _response = this.mapper.Map<List<TblUser>, List<UserModel>>(_data);
+            }
+            return _response;
+        }
+        public async Task<UserModel> Getbycode(string code)
+        {
+            UserModel _response = new UserModel();
+            var _data = await this.context.TblUsers.FindAsync(code);
+            if (_data != null)
+            {
+                _response = this.mapper.Map<TblUser, UserModel>(_data);
+            }
+            return _response;
         }
     }
 }

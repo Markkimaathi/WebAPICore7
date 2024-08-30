@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using APIDEV.Modal;
 using APIDEV.Repos.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,19 +19,37 @@ public partial class LearndataContext : DbContext
 
     public virtual DbSet<Brand> Brands { get; set; }
 
+    public virtual DbSet<TblCustomer> TblCustomers { get; set; }
+
     public virtual DbSet<Event> Events { get; set; }
+
+    public virtual DbSet<TblMenu> TblMenus { get; set; }
+
+    public virtual DbSet<TblOtpManager> TblOtpManagers { get; set; }
 
     public virtual DbSet<TblProduct> TblProducts { get; set; }
 
     public virtual DbSet<TblProductimage> TblProductimages { get; set; }
 
+    public virtual DbSet<TblPwdManger> TblPwdMangers { get; set; }
+
     public virtual DbSet<TblRefreshtoken> TblRefreshtokens { get; set; }
+
+    public virtual DbSet<TblRole> TblRoles { get; set; }
+
+    public virtual DbSet<TblRolepermission> TblRolepermissions { get; set; }
+
+    public virtual DbSet<TblTempuser> TblTempusers { get; set; }
+
+    public virtual DbSet<TblUser> TblUsers { get; set; }
+    public virtual DbSet<Customermodal> customerdetail { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TblProductimage>(entity =>
+        modelBuilder.Entity<TblTempuser>(entity =>
         {
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.HasKey(e => e.Id).HasName("tbl_tempuser1");
         });
 
         OnModelCreatingPartial(modelBuilder);
