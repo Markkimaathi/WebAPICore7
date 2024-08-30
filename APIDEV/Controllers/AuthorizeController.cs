@@ -11,7 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace LearnAPI.Controllers
+namespace APIDEV.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -49,7 +49,7 @@ namespace LearnAPI.Controllers
                 };
                 var token = tokenhandler.CreateToken(tokendesc);
                 var finaltoken = tokenhandler.WriteToken(token);
-                return Ok(new TokenResponse() { Token = finaltoken, RefreshToken = await this.refresh.GenerateToken(userCred.username) });
+                return Ok(new TokenResponse() { Token = finaltoken, RefreshToken = await this.refresh.GenerateToken(userCred.us) });
             }
             else
             {
