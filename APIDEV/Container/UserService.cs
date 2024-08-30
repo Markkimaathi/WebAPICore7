@@ -7,7 +7,7 @@ using AutoMapper;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 
-namespace LearnAPI.Container
+namespace APIDEV    .Container
 {
     public class UserService : IUserService
     {
@@ -27,7 +27,7 @@ namespace LearnAPI.Container
             if (!otpresponse)
             {
                 response.Result = "fail";
-                response.Errormessage = "Invalid OTP or Expired";
+                response.Message = "Invalid OTP or Expired";
             }
             else
             {
@@ -48,7 +48,7 @@ namespace LearnAPI.Container
                 await this.context.SaveChangesAsync();
                 await UpdatePWDManager(username, _tempdata.Password);
                 response.Result = "pass";
-                response.Errormessage = "Registered successfully.";
+                response.Message = "Registered successfully.";
             }
 
             return response;
@@ -68,7 +68,7 @@ namespace LearnAPI.Container
                 {
                     isvalid = false;
                     response.Result = "fail";
-                    response.Errormessage = "Duplicate username";
+                    response.Message = "Duplicate username";
                 }
 
                 // duplicate Email
@@ -77,7 +77,7 @@ namespace LearnAPI.Container
                 {
                     isvalid = false;
                     response.Result = "fail";
-                    response.Errormessage = "Duplicate Email";
+                    response.Message = "Duplicate Email";
                 }
 
 
@@ -98,7 +98,7 @@ namespace LearnAPI.Container
                     await UpdateOtp(userRegister.UserName, OTPText, "register");
                     await SendOtpMail(userRegister.Email, OTPText, userRegister.Name);
                     response.Result = "pass";
-                    response.Errormessage = userid.ToString();
+                    response.Message = userid.ToString();
                 }
 
             }
@@ -122,7 +122,7 @@ namespace LearnAPI.Container
                 if (_pwdhistory)
                 {
                     response.Result = "fail";
-                    response.Errormessage = "Don't use the same password that used in last 3 transaction";
+                    response.Message = "Don't use the same password that used in last 3 transaction";
                 }
                 else
                 {
@@ -130,13 +130,13 @@ namespace LearnAPI.Container
                     await this.context.SaveChangesAsync();
                     await UpdatePWDManager(username, newpassword);
                     response.Result = "pass";
-                    response.Errormessage = "Password changed.";
+                    response.Message = "Password changed.";
                 }
             }
             else
             {
                 response.Result = "fail";
-                response.Errormessage = "Failed to validate old password.";
+                response.Message = "Failed to validate old password.";
             }
             return response;
         }
@@ -151,13 +151,13 @@ namespace LearnAPI.Container
                 await UpdateOtp(username, otptext, "forgetpassword");
                 await SendOtpMail(_user.Email, otptext, _user.Name);
                 response.Result = "pass";
-                response.Errormessage = "OTP sent";
+                response.Message = "OTP sent";
 
             }
             else
             {
                 response.Result = "fail";
-                response.Errormessage = "Invalid User";
+                response.Message = "Invalid User";
             }
             return response;
         }
@@ -173,7 +173,7 @@ namespace LearnAPI.Container
                 if (pwdhistory)
                 {
                     response.Result = "fail";
-                    response.Errormessage = "Don't use the same password that used in last 3 transaction";
+                    response.Message = "Don't use the same password that used in last 3 transaction";
                 }
                 else
                 {
@@ -184,14 +184,14 @@ namespace LearnAPI.Container
                         await this.context.SaveChangesAsync();
                         await UpdatePWDManager(username, Password);
                         response.Result = "pass";
-                        response.Errormessage = "Password changed";
+                        response.Message = "Password changed";
                     }
                 }
             }
             else
             {
                 response.Result = "fail";
-                response.Errormessage = "Invalid OTP";
+                response.Message = "Invalid OTP";
             }
             return response;
         }
@@ -288,12 +288,12 @@ namespace LearnAPI.Container
                 _user.Isactive = userstatus;
                 await this.context.SaveChangesAsync();
                 response.Result = "pass";
-                response.Errormessage = "User Status changed";
+                response.Message = "User Status changed";
             }
             else
             {
                 response.Result = "fail";
-                response.Errormessage = "Invalid User";
+                response.Message = "Invalid User";
             }
             return response;
         }
@@ -307,12 +307,12 @@ namespace LearnAPI.Container
                 _user.Role = userrole;
                 await this.context.SaveChangesAsync();
                 response.Result = "pass";
-                response.Errormessage = "User Role changed";
+                response.Message = "User Role changed";
             }
             else
             {
                 response.Result = "fail";
-                response.Errormessage = "Invalid User";
+                response.Message = "Invalid User";
             }
             return response;
         }

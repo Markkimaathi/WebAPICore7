@@ -45,7 +45,7 @@ namespace APIDEV.Controllers
             }
             catch (Exception ex)
             {
-                response.Errormessage = ex.Message;
+                response.Message = ex.Message;
             }
             return Ok(response);
         }
@@ -82,7 +82,7 @@ namespace APIDEV.Controllers
             catch (Exception ex)
             {
                 errorcount++;
-                response.Errormessage = ex.Message;
+                response.Message = ex.Message;
             }
             response.ResponseCode = 200;
             response.Result = passcount + " Files uploaded &" + errorcount + " files failed";
@@ -265,7 +265,7 @@ namespace APIDEV.Controllers
             catch (Exception ex)
             {
                 errorcount++;
-                response.Errormessage = ex.Message;
+                response.Message = ex.Message;
             }
             response.ResponseCode = 200;
             response.Result = passcount + " Files uploaded &" + errorcount + " files failed";

@@ -1,7 +1,6 @@
 ﻿using APIDEV.Modal;
 using APIDEV.Repos;
 using APIDEV.Service;
-using LearnAPI.Modal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

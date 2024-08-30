@@ -49,7 +49,7 @@ namespace APIDEV.Container
                             await this.context.SaveChangesAsync();
                             await dbtransaction.CommitAsync();
                             response.Result = "pass";
-                            response.Errormessage = "Saved successfully.";
+                            response.Message = "Saved successfully.";
                         }
                         else
                         {
@@ -60,7 +60,7 @@ namespace APIDEV.Container
                     else
                     {
                         response.Result = "fail";
-                        response.Errormessage = "Failed";
+                        response.Message = "Failed";
                     }
                 }
 
